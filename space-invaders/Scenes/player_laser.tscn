@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://dtqek5qq170gk"]
+
+[ext_resource type="Texture2D" uid="uid://csbpe18y4bw24" path="res://Images/blue_laser-removebg-preview.png" id="1_3bwcd"]
+[ext_resource type="Script" uid="uid://beq4arxuybws7" path="res://Scripts/player_laser.gd" id="2_8ikq2"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_1d708"]
+radius = 40.0
+height = 490.0
+
+[node name="player_laser" type="Sprite2D"]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_3bwcd")
+script = ExtResource("2_8ikq2")
+
+[node name="area_col" type="Area2D" parent="."]
+
+[node name="bullet_col" type="CollisionShape2D" parent="area_col"]
+position = Vector2(10, 35)
+shape = SubResource("CapsuleShape2D_1d708")
+
+[node name="disappear" type="VisibleOnScreenNotifier2D" parent="."]
+scale = Vector2(4.49999, 24.75)
+
+[connection signal="area_entered" from="area_col" to="." method="_on_player_laser_enter_enemy"]
+[connection signal="screen_exited" from="disappear" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]

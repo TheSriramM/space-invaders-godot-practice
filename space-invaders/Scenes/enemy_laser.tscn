@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://diutiim18t4wh"]
+
+[ext_resource type="Texture2D" uid="uid://djn6rn84l8dtf" path="res://Images/red_laser-removebg-preview.png" id="1_7d0vr"]
+[ext_resource type="Script" uid="uid://6wc57iacx1el" path="res://Scripts/enemy_laser.gd" id="2_8vqdj"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_4hecc"]
+radius = 35.0
+height = 430.0
+
+[node name="enemy_laser" type="Sprite2D"]
+position = Vector2(475, 825)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_7d0vr")
+script = ExtResource("2_8vqdj")
+
+[node name="area_col" type="Area2D" parent="."]
+
+[node name="laser_col" type="CollisionShape2D" parent="area_col"]
+position = Vector2(5, 30)
+shape = SubResource("CapsuleShape2D_4hecc")
+
+[node name="disappear" type="VisibleOnScreenNotifier2D" parent="."]
+position = Vector2(145, -405)
+scale = Vector2(251.75, 27.25)
+
+[connection signal="screen_exited" from="disappear" to="." method="_on_disappear_screen_exited"]
