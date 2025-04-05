@@ -4,19 +4,17 @@
 [ext_resource type="Script" uid="uid://cfpd042r2cbbn" path="res://Scripts/spaceship.gd" id="2_llk4f"]
 [ext_resource type="Script" uid="uid://c34yddo16rr8" path="res://Scripts/background.gd" id="2_yu8v1"]
 [ext_resource type="Texture2D" uid="uid://fs8hf3jktore" path="res://Images/spaceship_blue-removebg-preview.png" id="3_1pary"]
+[ext_resource type="PackedScene" uid="uid://d151xv5oecjbi" path="res://Scenes/Enemies/red_enemy.tscn" id="4_1l0tm"]
 [ext_resource type="PackedScene" uid="uid://dtqek5qq170gk" path="res://Scenes/player_laser.tscn" id="4_e3xxs"]
-[ext_resource type="PackedScene" uid="uid://cgkl0syg58s7w" path="res://Scenes/grey_enemy.tscn" id="5_dbwrf"]
-[ext_resource type="Texture2D" uid="uid://dev5vauyy1csr" path="res://Images/earth_atmosphere-removebg-preview.png" id="8_h4fw4"]
-[ext_resource type="Texture2D" uid="uid://b7h5nw2hllkmf" path="res://Images/earth_transparent.png" id="8_v158k"]
+[ext_resource type="PackedScene" uid="uid://bo7x4y30haxyv" path="res://Scenes/UI/upgrades.tscn" id="4_ldgsr"]
+[ext_resource type="PackedScene" uid="uid://cgkl0syg58s7w" path="res://Scenes/Enemies/grey_enemy.tscn" id="5_dbwrf"]
+[ext_resource type="FontFile" uid="uid://ddj3v0wgx1hcy" path="res://Images/RobotoMono-Bold.ttf" id="8_v158k"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pqjit"]
 size = Vector2(164, 112)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_f24bw"]
 size = Vector2(183, 148)
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_v158k"]
-radius = 227.0
 
 [node name="game" type="Node2D"]
 
@@ -28,10 +26,17 @@ texture = ExtResource("1_jqyek")
 stretch_mode = 1
 script = ExtResource("2_yu8v1")
 
-[node name="grey_enemies" type="Node2D" parent="background"]
+[node name="upgrades" parent="background" instance=ExtResource("4_ldgsr")]
+layout_mode = 1
+offset_left = -5.0
 
-[node name="grey_enemy_1" parent="background/grey_enemies" instance=ExtResource("5_dbwrf")]
+[node name="enemies" type="Node2D" parent="background"]
+
+[node name="grey_enemy" parent="background/enemies" instance=ExtResource("5_dbwrf")]
 position = Vector2(488, -78)
+
+[node name="red_enemy" parent="background/enemies" instance=ExtResource("4_1l0tm")]
+position = Vector2(782, -116)
 
 [node name="spaceship" type="CharacterBody2D" parent="background"]
 position = Vector2(499, 804)
@@ -54,6 +59,12 @@ one_shot = true
 [node name="bullet_pos" type="Marker2D" parent="background/spaceship"]
 position = Vector2(7, -66)
 
+[node name="bullet_pos2" type="Marker2D" parent="background/spaceship"]
+position = Vector2(-22, -66)
+
+[node name="bullet_pos3" type="Marker2D" parent="background/spaceship"]
+position = Vector2(30, -66)
+
 [node name="player_laser" parent="background/spaceship" instance=ExtResource("4_e3xxs")]
 position = Vector2(6, -107)
 scale = Vector2(0.15, 0.15)
@@ -68,7 +79,7 @@ shape = SubResource("RectangleShape2D_f24bw")
 wait_time = 0.5
 
 [node name="heal" type="Timer" parent="background/spaceship"]
-wait_time = 3.0
+wait_time = 2.0
 
 [node name="health_text" type="Label" parent="background"]
 layout_mode = 0
@@ -76,31 +87,17 @@ offset_left = 5.0
 offset_top = 5.0
 offset_right = 415.0
 offset_bottom = 117.0
+theme_override_fonts/font = ExtResource("8_v158k")
 theme_override_font_sizes/font_size = 40
 
-[node name="earth" type="StaticBody2D" parent="background"]
-position = Vector2(499, 1101)
-scale = Vector2(0.75, 0.75)
-
-[node name="earth_atmosphere" type="TextureRect" parent="background/earth"]
-offset_left = -692.0
-offset_top = -431.0
-offset_right = 26.0
-offset_bottom = 57.0
-scale = Vector2(2, 2)
-texture = ExtResource("8_h4fw4")
-
-[node name="earth" type="TextureRect" parent="background/earth"]
-offset_left = -247.0
-offset_top = -266.0
-offset_right = 1801.0
-offset_bottom = 1782.0
-scale = Vector2(0.25, 0.25)
-texture = ExtResource("8_v158k")
-
-[node name="earth_col" type="CollisionShape2D" parent="background/earth"]
-position = Vector2(7, -8)
-shape = SubResource("CircleShape2D_v158k")
+[node name="score" type="Label" parent="background"]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 67.0
+offset_right = 289.0
+offset_bottom = 161.0
+theme_override_fonts/font = ExtResource("8_v158k")
+theme_override_font_sizes/font_size = 40
 
 [connection signal="timeout" from="background/spaceship/cooldown" to="background/spaceship" method="_on_cooldown_timeout"]
 [connection signal="area_entered" from="background/spaceship/spaceship_area" to="background/spaceship" method="_on_spaceship_area_another_area_entered"]

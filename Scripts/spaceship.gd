@@ -2,8 +2,14 @@ extends CharacterBody2D
 
 @export var max_speed = 400
 @export var accel = 1500
-@export var health = 1000
+@export var health = 2000
 @export var heal = 200
+var more_lasers = [200, 500, 1000]
+var more_damage = [50, 100, 200, 400, 800, 1500, 3000]
+var more_hp = [50, 100, 200, 400, 800, 1500, 3000]
+var more_lasers_index = 0
+var score = 0
+var player_damage = 100
 var can_shoot = true
 var enemy_contact = 0
 var enemy_damage = 100
@@ -34,6 +40,25 @@ func _shoot():
 	b.global_position = $bullet_pos.global_position
 	b.visible = true
 	enemy_contact = 0
+	if more_lasers_index >= 1:
+		var b2 = player_laser.duplicate()
+		var b2_area = $player_laser/area_col.duplicate()
+		get_parent().add_child(b2)
+		b2.add_child(b2_area)
+		b2_area.add_to_group("player_laser")
+		b2.global_position = $bullet_pos2.global_position
+		b2.visible = true
+		enemy_contact = 0
+		if more_lasers_index == 2:
+			var b3 = player_laser.duplicate()
+			var b3_area = $player_laser/area_col.duplicate()
+			get_parent().add_child(b3)
+			b3.add_child(b3_area)
+			b3_area.add_to_group("player_laser")
+			b3.global_position = $bullet_pos3.global_position
+			b3.visible = true
+			enemy_contact = 0
+
 
 
 func _on_cooldown_timeout() -> void:
@@ -52,7 +77,12 @@ func _on_spaceship_area_another_area_entered(area: Area2D) -> void:
 		$heal.start()
 	if "grey_enemy" in area.get_groups():
 		$damage_cooldown.start()
-
+	if "red_enemy_laser" in area.get_groups():
+		enemy_damage = 150
+		_got_hit()
+		$heal.start()
+	if "red_enemy" in area.get_groups():
+		$damage_cooldown.start()
 
 func _on_damage_cooldown_timeout() -> void:
 	#if the player has been in contact with the enemy less than 1 time

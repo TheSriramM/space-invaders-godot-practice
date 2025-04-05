@@ -23,4 +23,5 @@ shape = SubResource("CapsuleShape2D_4hecc")
 position = Vector2(145, -405)
 scale = Vector2(251.75, 27.25)
 
+[connection signal="area_entered" from="area_col" to="." method="_on_area_col_area_entered"]
 [connection signal="screen_exited" from="disappear" to="." method="_on_disappear_screen_exited"]

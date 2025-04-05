@@ -12,5 +12,7 @@ func _on_visible_on_screen_notifier_2d_screen_exited() -> void:
 
 
 func _on_player_laser_enter_enemy(area: Area2D) -> void:
-	if "grey_enemy" in area.get_groups():
+	if "grey_enemies" in area.get_groups():
+		hide()
+	if "red_enemies" in area.get_groups():
 		hide()

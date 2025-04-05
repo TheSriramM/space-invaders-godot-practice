@@ -1,0 +1,35 @@
+[gd_scene load_steps=2 format=3 uid="uid://bo7x4y30haxyv"]
+
+[ext_resource type="Script" uid="uid://bd24mci0fcu8t" path="res://Scripts/UI/upgrades.gd" id="1_2auxm"]
+
+[node name="upgrades" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_2auxm")
+
+[node name="vertical_buttons" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 769.0
+offset_top = 2.0
+offset_right = 1001.0
+offset_bottom = 109.0
+
+[node name="more_lasers" type="Button" parent="vertical_buttons"]
+layout_mode = 2
+text = "More lasers"
+
+[node name="more_damage" type="Button" parent="vertical_buttons"]
+layout_mode = 2
+text = "More damage"
+
+[node name="more_hp" type="Button" parent="vertical_buttons"]
+layout_mode = 2
+text = "More health"
+
+[connection signal="pressed" from="vertical_buttons/more_lasers" to="." method="_on_more_lasers_pressed"]
+[connection signal="pressed" from="vertical_buttons/more_damage" to="." method="_on_more_damage_pressed"]
+[connection signal="pressed" from="vertical_buttons/more_hp" to="." method="_on_more_hp_pressed"]
