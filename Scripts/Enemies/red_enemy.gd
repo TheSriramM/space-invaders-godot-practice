@@ -2,8 +2,11 @@ extends CharacterBody2D
 
 @export var health = 1000
 @export var damage = 200
+const max_red_count = 2
+var cur_red_count = 0
 var red_enemy = preload("res://Scenes/Enemies/red_enemy.tscn")
 var rnx_pos = RandomNumberGenerator.new()
+var speed = 1
 var close_damage
 var move_forward = false
 var next_to_spaceship = false
@@ -13,6 +16,8 @@ func _ready():
 		$red_enemies_timer.start()
 	else:
 		move_forward = true
+		cur_red_count += 1
+	scale = Vector2(0.9, 0.9)
 	position = Vector2(rnx_pos.randi_range(100, 700), -100)
 	$r_enemy_area.add_to_group("red_enemies")
 	$"lasers/1_bullet_pos/1_enemy_laser/area_col".add_to_group("red_enemy_laser")
@@ -21,10 +26,11 @@ func _ready():
 	
 func _physics_process(_delta: float) -> void:
 	if move_forward:
-		position.y += 1
+		velocity.y += speed
 		move_and_slide()
 
 func _got_hit_by_player():
+	position.y -= 10
 	damage = get_parent().get_parent().damage
 	if next_to_spaceship:
 		close_damage = damage + 100
@@ -53,18 +59,22 @@ func _on_queue_free_timeout() -> void:
 	queue_free()
 	get_parent().get_parent().score += 100
 	get_parent().get_parent().red_enemy_def += 1
-	var instance = red_enemy.instantiate()
-	instance.add_to_group("red_enemies")
-	get_parent().add_child(instance)
+	if get_parent().get_parent().boss == false:
+		var instance = red_enemy.instantiate()
+		instance.add_to_group("red_enemies")
+		get_parent().add_child(instance)
 
 
 func _on_screen_screen_exited() -> void:
 	get_parent().get_parent().red_enemy_def += 1
 	get_parent().get_parent().planet_health -= 500
-	var instance = red_enemy.instantiate()
-	instance.add_to_group("red_enemies")
-	get_parent().add_child(instance)
+	if get_parent().get_parent().boss == false:
+		var instance = red_enemy.instantiate()
+		instance.add_to_group("red_enemies")
+		get_parent().add_child(instance)
+		queue_free()
 
 
 func _on_red_enemies_timer_timeout() -> void:
 	move_forward = true
+	get_parent().get_parent().wave_no += 1

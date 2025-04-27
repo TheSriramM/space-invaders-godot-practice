@@ -4,7 +4,7 @@ extends CharacterBody2D
 @export var accel = 1500
 @export var health = 2000
 @export var heal = 200
-var more_lasers = [200, 500, 1000]
+var more_lasers = [500, 1000]
 var more_damage = [50, 100, 200, 400, 800, 1500, 3000]
 var more_hp = [50, 100, 200, 400, 800, 1500, 3000]
 var more_lasers_index = 0
@@ -25,11 +25,9 @@ func _physics_process(delta):
 	velocity = velocity.move_toward(Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down") * max_speed, accel * delta)
 	# Move the character
 	move_and_slide()
-	if Input.is_action_pressed("shoot"):
-		if can_shoot:
-			_shoot()
-			$cooldown.start()
-			can_shoot = false
+	if can_shoot:
+		$cooldown.start()
+		can_shoot = false
 	
 func _shoot():
 	var b = player_laser.duplicate()
@@ -40,7 +38,7 @@ func _shoot():
 	b.global_position = $bullet_pos.global_position
 	b.visible = true
 	enemy_contact = 0
-	if more_lasers_index >= 1:
+	if more_lasers_index > 0:
 		var b2 = player_laser.duplicate()
 		var b2_area = $player_laser/area_col.duplicate()
 		get_parent().add_child(b2)
@@ -49,7 +47,7 @@ func _shoot():
 		b2.global_position = $bullet_pos2.global_position
 		b2.visible = true
 		enemy_contact = 0
-		if more_lasers_index == 2:
+		if more_lasers_index >= 2:
 			var b3 = player_laser.duplicate()
 			var b3_area = $player_laser/area_col.duplicate()
 			get_parent().add_child(b3)
@@ -63,6 +61,7 @@ func _shoot():
 
 func _on_cooldown_timeout() -> void:
 	can_shoot = true
+	_shoot()
 	
 func _got_hit():
 	health -= enemy_damage
@@ -81,9 +80,15 @@ func _on_spaceship_area_another_area_entered(area: Area2D) -> void:
 		enemy_damage = 150
 		_got_hit()
 		$heal.start()
-	if "red_enemy" in area.get_groups():
+	if "red_enemies" in area.get_groups():
 		$damage_cooldown.start()
-
+	if "orange_enemy_laser" in area.get_groups():
+		enemy_damage = 250
+		_got_hit()
+		$heal.start()
+	if "orange_enemies" in area.get_groups():
+		$damage_cooldown.start()
+		
 func _on_damage_cooldown_timeout() -> void:
 	#if the player has been in contact with the enemy less than 1 time
 	if enemy_contact < 1:
@@ -94,4 +99,6 @@ func _on_damage_cooldown_timeout() -> void:
 		enemy_damage = 100
 	
 func _on_heal_timeout() -> void:
-	health += heal
+	if health + heal < 3000:
+		health += heal
+	

@@ -3,6 +3,7 @@ extends CharacterBody2D
 @export var health = 500
 var grey_enemy = preload("res://Scenes/Enemies/grey_enemy.tscn")
 var rnx_pos = RandomNumberGenerator.new()
+var speed = 1
 var damage = 100
 var can_shoot = true
 var spawn_new_enemy = false
@@ -14,6 +15,7 @@ var beg_pos : Vector2
 var grey_enemy_def = 0
 
 func _ready() -> void:
+	scale = Vector2(0.8, 0.8)
 	rnx_pos.randomize()
 	beg_pos = global_position
 	$enemy_laser.hide()
@@ -23,11 +25,12 @@ func _ready() -> void:
 	damage = get_parent().get_parent().damage
 	if is_in_group("grey_enemies"):
 		global_position = Vector2(beg_pos.x + rnx_pos.randi_range(100, 700), beg_pos.y)
+
 	
 	
 
 func _physics_process(_delta: float) -> void:
-	velocity.y += 1
+	velocity.y += speed
 	move_and_slide()
 	
 
@@ -35,13 +38,15 @@ func _on_visible_on_screen_notifier_2d_screen_exited() -> void:
 	queue_free()
 	get_parent().get_parent().score += 30
 	grey_enemy_def += 1
-	var instance = grey_enemy.instantiate()
-	instance.add_to_group("grey_enemies")
-	get_parent().add_child(instance)
-	
+	if get_parent().get_parent().boss == false:
+		var instance = grey_enemy.instantiate()
+		instance.add_to_group("grey_enemies")
+		get_parent().add_child(instance)
+
+
 func _got_hit_by_player():
 	health -= damage
-	global_position.y -= 20
+	global_position.y -= 15
 	if health <= 0:
 		#play the explosion animation
 		$explosion.visible = true
@@ -76,7 +81,8 @@ func _on_queue_free_timeout() -> void:
 	queue_free()
 	get_parent().get_parent().score += 30
 	grey_enemy_def += 1
-	var instance = grey_enemy.instantiate()
-	instance.add_to_group("grey_enemies")
-	get_parent().add_child(instance)
-	
+	if get_parent().get_parent().boss == false:
+		print("new grey enemy")
+		var instance = grey_enemy.instantiate()
+		instance.add_to_group("grey_enemies")
+		get_parent().add_child(instance)

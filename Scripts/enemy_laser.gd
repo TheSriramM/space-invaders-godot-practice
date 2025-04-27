@@ -2,6 +2,7 @@ extends Sprite2D
 
 func _ready() -> void:
 	global_position = get_parent().global_position
+	scale = Vector2(0.2, 0.2)
 
 # This function is called at every frame
 func _process(_delta):
@@ -10,10 +11,14 @@ func _process(_delta):
 		#if the laser's parent is a red enemy
 		if get_parent().get_parent().get_parent().move_forward:
 			show()
-			global_position.y += 2
+			global_position.y += 3
+	elif "orange_enemy_area" in get_parent().get_parent().get_parent().get_child(3).name:
+		if get_parent().get_parent().get_parent().move_forward:
+			show()
+			global_position.y += 3
 	else:
 		show()
-		global_position.y += 2
+		global_position.y += 3
 
 
 

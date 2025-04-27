@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://cwit5e6esiic1"]
+[gd_scene load_steps=16 format=3 uid="uid://cwit5e6esiic1"]
 
 [ext_resource type="Texture2D" uid="uid://dm7yyn2pffoax" path="res://Images/space_background.jpg" id="1_jqyek"]
 [ext_resource type="Script" uid="uid://cfpd042r2cbbn" path="res://Scripts/spaceship.gd" id="2_llk4f"]
@@ -8,13 +8,23 @@
 [ext_resource type="PackedScene" uid="uid://dtqek5qq170gk" path="res://Scenes/player_laser.tscn" id="4_e3xxs"]
 [ext_resource type="PackedScene" uid="uid://bo7x4y30haxyv" path="res://Scenes/UI/upgrades.tscn" id="4_ldgsr"]
 [ext_resource type="PackedScene" uid="uid://cgkl0syg58s7w" path="res://Scenes/Enemies/grey_enemy.tscn" id="5_dbwrf"]
+[ext_resource type="PackedScene" uid="uid://c358kx1tqg62a" path="res://Scenes/Enemies/orange_enemy.tscn" id="6_o5yvi"]
 [ext_resource type="FontFile" uid="uid://ddj3v0wgx1hcy" path="res://Images/RobotoMono-Bold.ttf" id="8_v158k"]
+[ext_resource type="Texture2D" uid="uid://c6lwcfndmj2qv" path="res://Images/heart pixel art 254x254.png" id="10_ldgsr"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pqjit"]
 size = Vector2(164, 112)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_f24bw"]
 size = Vector2(183, 148)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_o5yvi"]
+radius = 54.0
+height = 984.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rku1e"]
+radius = 67.0
+height = 1020.0
 
 [node name="game" type="Node2D"]
 
@@ -37,6 +47,10 @@ position = Vector2(488, -78)
 
 [node name="red_enemy" parent="background/enemies" instance=ExtResource("4_1l0tm")]
 position = Vector2(782, -116)
+
+[node name="orange_enemy" parent="background/enemies" instance=ExtResource("6_o5yvi")]
+position = Vector2(161, -108)
+rotation = 3.14159
 
 [node name="spaceship" type="CharacterBody2D" parent="background"]
 position = Vector2(499, 804)
@@ -83,23 +97,46 @@ wait_time = 2.0
 
 [node name="health_text" type="Label" parent="background"]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 5.0
+offset_left = 79.0
+offset_top = 61.0
 offset_right = 415.0
-offset_bottom = 117.0
+offset_bottom = 197.0
 theme_override_fonts/font = ExtResource("8_v158k")
 theme_override_font_sizes/font_size = 40
+
+[node name="pixel_heart" type="Sprite2D" parent="background/health_text"]
+position = Vector2(-45, 32)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("10_ldgsr")
 
 [node name="score" type="Label" parent="background"]
 layout_mode = 0
 offset_left = 3.0
-offset_top = 67.0
+offset_top = 1.0
 offset_right = 289.0
-offset_bottom = 161.0
+offset_bottom = 102.0
 theme_override_fonts/font = ExtResource("8_v158k")
 theme_override_font_sizes/font_size = 40
+
+[node name="boss_timer" type="Timer" parent="background"]
+wait_time = 70.0
+one_shot = true
+autostart = true
+
+[node name="left_boss_area" type="Area2D" parent="background"]
+
+[node name="left_col" type="CollisionShape2D" parent="background/left_boss_area"]
+position = Vector2(-50, 525)
+shape = SubResource("CapsuleShape2D_o5yvi")
+
+[node name="right_boss_area" type="Area2D" parent="background"]
+
+[node name="right_col" type="CollisionShape2D" parent="background/right_boss_area"]
+position = Vector2(1061, 533)
+shape = SubResource("CapsuleShape2D_rku1e")
 
 [connection signal="timeout" from="background/spaceship/cooldown" to="background/spaceship" method="_on_cooldown_timeout"]
 [connection signal="area_entered" from="background/spaceship/spaceship_area" to="background/spaceship" method="_on_spaceship_area_another_area_entered"]
 [connection signal="timeout" from="background/spaceship/damage_cooldown" to="background/spaceship" method="_on_damage_cooldown_timeout"]
 [connection signal="timeout" from="background/spaceship/heal" to="background/spaceship" method="_on_heal_timeout"]
+[connection signal="timeout" from="background/boss_timer" to="background" method="_on_boss_timer_timeout"]
