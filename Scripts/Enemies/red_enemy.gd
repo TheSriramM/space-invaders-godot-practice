@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-@export var health = 1000
+@export var health = 500
 @export var damage = 200
 const max_red_count = 2
 var cur_red_count = 0

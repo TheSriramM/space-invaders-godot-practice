@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://b6cpvl7nvugcp"]
+[gd_scene load_steps=6 format=3 uid="uid://b6cpvl7nvugcp"]
 
 [ext_resource type="Texture2D" uid="uid://g1kfywydy7lc" path="res://Images/boss-removebg-preview.png" id="1_ayfg3"]
 [ext_resource type="Script" uid="uid://wmam3wsn7unw" path="res://Scripts/Enemies/boss.gd" id="1_p1f3m"]
+[ext_resource type="PackedScene" uid="uid://dlx1gm4u8lkh2" path="res://Scenes/boss_bullet.tscn" id="3_5afma"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5afma"]
 radius = 96.0208
@@ -27,8 +28,12 @@ shape = SubResource("CircleShape2D_5afma")
 position = Vector2(8, -11)
 shape = SubResource("CircleShape2D_fdynt")
 
-[node name="lasers" type="Node2D" parent="."]
-
 [node name="on_screen" type="VisibleOnScreenNotifier2D" parent="."]
+
+[node name="boss_bullet" parent="." instance=ExtResource("3_5afma")]
+position = Vector2(9.5, 96)
+
+[node name="laser_pos" type="Marker2D" parent="."]
+position = Vector2(8, 99)
 
 [connection signal="area_entered" from="boss_area" to="." method="_on_area_entered"]

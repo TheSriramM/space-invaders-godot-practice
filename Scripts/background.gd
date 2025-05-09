@@ -31,6 +31,7 @@ func _ready() -> void:
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
+	damage = $spaceship.player_damage
 	hp = $spaceship.health
 	$health_text.text = str(hp)
 	$score.text = "Score: " + str(score)

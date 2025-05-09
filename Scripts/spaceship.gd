@@ -2,7 +2,7 @@ extends CharacterBody2D
 
 @export var max_speed = 400
 @export var accel = 1500
-@export var health = 2000
+@export var health = 3000
 @export var heal = 200
 var more_lasers = [500, 1000]
 var more_damage = [50, 100, 200, 400, 800, 1500, 3000]
@@ -87,6 +87,12 @@ func _on_spaceship_area_another_area_entered(area: Area2D) -> void:
 		_got_hit()
 		$heal.start()
 	if "orange_enemies" in area.get_groups():
+		$damage_cooldown.start()
+	if "boss_bullet" in area.get_groups():
+		enemy_damage = 500
+		_got_hit()
+		$heal.start()
+	if "boss" in area.get_groups():
 		$damage_cooldown.start()
 		
 func _on_damage_cooldown_timeout() -> void:

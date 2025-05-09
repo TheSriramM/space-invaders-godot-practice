@@ -2,51 +2,49 @@ extends CharacterBody2D
 
 @export var health = 5000
 @export var damage = 500
-var shoot_pos = false
-var move_right = false
-var move_left = false
-var horizontal = false
+var boss_bullet = preload("res://Scenes/boss_bullet.tscn")
 
 const HORIZONTAL_SPEED = 200
 const DOWN_SPEED = 100
+const TARGET_Y = 200
+
+var moving_right = false
+var is_horizontal = false
 
 func _ready() -> void:
+	$boss_area.add_to_group("boss")
 	global_position = Vector2(490, -100)
 	velocity = Vector2.ZERO
 
 func _physics_process(delta: float) -> void:
-	# Always reset velocity at the start of the frame
 	velocity = Vector2.ZERO
-	
-	if not horizontal:
-		# Moving down until reaching y = 300
-		if position.y < 300:
+
+	if not is_horizontal:
+		if position.y < TARGET_Y:
 			velocity.y = DOWN_SPEED
 		else:
-			shoot_pos = true
-			horizontal = true
+			global_position.y = TARGET_Y  # Snap to target position
+			velocity = Vector2.ZERO
+			is_horizontal = true
 	else:
-		# Horizontal movement
-		if move_left:
-			velocity.x = -HORIZONTAL_SPEED
-		elif move_right:
+		velocity.y = 0  # Ensure vertical movement is off
+
+		if moving_right:
 			velocity.x = HORIZONTAL_SPEED
 		else:
-			velocity.x = -HORIZONTAL_SPEED  # default to left if neither is set (initial movement)
+			velocity.x = -HORIZONTAL_SPEED
 
 	move_and_slide()
 
-	if shoot_pos:
-		shoot()
 
-func shoot():
-	pass
 
 func _on_area_entered(area: Area2D) -> void:
-	print(area.get_groups())
-	if "left_boss_area" in area.get_groups():
-		move_right = true
-		move_left = false
-	elif "right_boss_area" in area.get_groups():
-		move_left = true
-		move_right = false
+	var groups = area.get_groups()
+	if "left_boss_area" in groups:
+		moving_right = true
+	elif "right_boss_area" in groups:
+		moving_right = false
+	if "player_laser" in area.get_groups():
+		health -= get_parent().damage
+		if health <= 0:
+			get_tree().change_scene_to_file("res://Scenes/UI/u_won.tscn")
